@@ -1,6 +1,14 @@
 <@= ModelVars @>
 <@ if Icon @>
-	static $icon = '<@= Icon @>';
+	private static $icon = '<@= Icon @>';
+<@ /if @>
+
+<@ if SkeletonDescription @>
+	static $skeletonDescription = '<@= SkeletonDescription @>';
+<@ /if @>
+
+<@ if SkeletonSitename @>
+	static $skeletonSitename = '<@= SkeletonSitename @>';
 <@ /if @>
 
 <@ if Description @>

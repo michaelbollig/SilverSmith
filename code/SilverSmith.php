@@ -5,7 +5,7 @@
 /**
  * This is the primary static class that dispatches all of the commands based on either
  * CLI input or invocation from another script, i.e. a controller
- *	
+ *
  * @package SilverSmith
  * @author Aaron Carlino <unclecheese@leftandmain.com>
  */
@@ -59,8 +59,8 @@ class SilverSmith {
 	 */
     protected static $yaml_path = null;
 
-    
-    
+
+
     /**
      * @var string An absolute path to the Git binary
      */
@@ -92,10 +92,10 @@ class SilverSmith {
 	    }
 	    return $classes;
 	}
-	
 
-	
-	
+
+
+
 	/**
 	 * Execute a Git command at the shell
 	 *
@@ -103,7 +103,7 @@ class SilverSmith {
 	 * @param string The Git command to run, less the "git"
 	 * @return string
 	 */
-    protected static function git($command) {     
+    protected static function git($command) {
         return exec(self::$git_path . " $command");
     }
 
@@ -139,7 +139,7 @@ class SilverSmith {
 
 
 
-	
+
 	/**
 	 * Loads all of the field configuration YAML files in the /lib/ directory
 	 *
@@ -217,9 +217,9 @@ class SilverSmith {
 	    }
 	}
 
-	
-	
-	
+
+
+
 	/**
 	 * Switches to the project root, to make sure we're not somewhere in a subdirectory
 	 * e.g. /mysite/code
@@ -241,15 +241,15 @@ class SilverSmith {
 	    }
 	    return false;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Rebuild the class maniest e.g. ?flush=all programatically
 	 *
 	 * @todo Can't figure out how to do this in SS3
 	 */
-	public static function rebuild_manifest() {        
+	public static function rebuild_manifest() {
 	}
 
 
@@ -268,7 +268,7 @@ class SilverSmith {
         $output = ob_get_contents();
         ob_end_clean();
         $database_result = array ();
-        foreach(explode("\n",$output) as $line) {            
+        foreach(explode("\n",$output) as $line) {
             if(preg_match('/Table ([A-Za-z0-9_:]+) created/', $line, $matches)) {
                 $table_name = str_replace(":","",$matches[1]);
                 if(substr($table_name, -9) == "_versions" || substr($table_name, -5) == "_Live") {
@@ -290,10 +290,10 @@ class SilverSmith {
                     $database_result[$table_name] = array (
                         'created' => false,
                         'fields' => array()
-                    );                    
+                    );
                 }
                 $database_result[$table_name]['fields'][] = "$field_name ({$field_type})";
-            }           
+            }
 
         }
         return $database_result;
@@ -321,7 +321,7 @@ class SilverSmith {
 	 * @param string The method name
 	 * @param array The arguments
 	 */
-	public static function __callStatic($method, $args) { 
+	public static function __callStatic($method, $args) {
         $prefix = substr($method, 0, 4);
         $suffix = substr($method, 4);
         if($prefix == "set_") {
@@ -340,10 +340,10 @@ class SilverSmith {
 	/**
 	 * Creates and updates the PHP code for all classes defined in the SilverSmith project configuration file
 	 *
-	 * @see "silversmith help"	 
+	 * @see "silversmith help"
 	 * @param The parameters, e.g. from the command line
 	 */
-    public static function build_code($params = array ()) {        
+    public static function build_code($params = array ()) {
         state("Validating project definition...");
         $validator = new SilverSmithSpec_Validator(self::$yaml_path);
         $errors    = $validator->getErrors();
@@ -367,12 +367,12 @@ class SilverSmith {
         $decorators         = array();
         line();
         say(cell("Status", 11, true, "grey", "on_white") . cell("File", 30, true, "grey", "on_white") . cell("Result", 50, true, "grey", "on_white"));
-        foreach (SilverSmithProject::get_all_nodes() as $node) {            
+        foreach (SilverSmithProject::get_all_nodes() as $node) {
             if (!$node->isNew() && !$node->isSilverSmithed()) {
                 say(cell("Omitted", 11, true, "white", "on_red") . cell("{$node->getKey()}.php", 30) . cell("Class has no code delimiters", 50));
                 continue;
             }
-            
+
             $class = $node->getKey();
             if ($node->getDecorator()) {
                 $decorators[] = $node->getKey();
@@ -403,7 +403,7 @@ class SilverSmith {
                     $page_types_created++;
                 elseif ($type == "Component")
                     $components_created++;
-                
+
             } else {
                 if (!$diff) {
                     say(cell("Unchanged", 11, true, "grey", "on_yellow") . cell("{$class}.php", 30) . cell("No modifications", 50));
@@ -413,15 +413,15 @@ class SilverSmith {
                         $page_types_updated++;
                     elseif ($type == "Component")
                         $components_updated++;
-                    
+
                 }
-                
-                
+
+
             }
-            
+
         }
-        
-        
+
+
         state("Rebuilding database...");
         self::rebuild_manifest();
         $db = self::rebuild_database();
@@ -457,29 +457,29 @@ class SilverSmith {
         }
         line();
         state("Done");
-        
+
 
         say("\n\n");
         say("Success! ", "green", "bold");
         say("\n\n");
         say(cell("", 50) . cell("Created", 10, true, "white", "on_green") . cell("Updated", 10, true, "white", "on_blue") . cell("Total", 10, true, "white", "on_red"));
         say(cell("Page types:", 50) . cell($page_types_created, 10) . cell($page_types_updated, 10) . cell($page_types, 10));
-        
+
         if(isset($params['debug'])) {
             say("Debug output:", "cyan");
             say(self::$debug_output);
         }
-    }    
-        
-        
-        
+    }
+
+
+
 
 	/**
 	 * Creates any templates that do not exist yet, unless the "force" parameter is specified
 	 *
-	 * @see "silversmith help"	 
+	 * @see "silversmith help"
 	 * @param The parameters, e.g. from the command line
-	 */    
+	 */
     public static function build_templates($params = array ()) {
         $theme_dir = isset($params['theme']) ? "themes/" . $params['theme'] : false;
         $force     = isset($params['force']);
@@ -504,18 +504,18 @@ class SilverSmith {
         $layout_dir = "$theme_dir/templates/Layout";
         if (!is_dir($layout_dir))
             mkdir($layout_dir);
-        
+
         $source = "Page.ss";
         if (isset($params['source'])) {
             $source = $params['source'];
         }
         if (!file_exists("$layout_dir/$source")) {
             fail("Source template $layout_dir/$source does not exist.");
-        }        
+        }
         if (!file_exists(self::$yaml_path)) {
             fail("File ".self::$yaml_path." does not exist.");
         }
-        
+
         SilverSmithProject::load(self::$yaml_path);
         $created = 0;
         say(cell("Status", 11, true, "grey", "on_white") . cell("File", 30, true, "grey", "on_white") . cell("Result", 40, true, "grey", "on_white"));
@@ -553,17 +553,17 @@ class SilverSmith {
         }
         line();
         say("$created templates created.");
-        
+
     }
-    
-    
+
+
 
 
 	/**
 	 * Adds the sample assets, PDFs and images into the assets directory. Used for content population
 	 *
-	 * @see "silversmith help"	 
-	 */    
+	 * @see "silversmith help"
+	 */
     public static function add_sample_assets() {
         say("Adding sample assets");
         $sample_path = self::$script_dir . "/code/lib/sample-assets";
@@ -572,19 +572,19 @@ class SilverSmith {
         say("Syncing database");
         $folder->syncChildren();
         say("Done.");
-                
+
     }
-    
-    
+
+
 
 
 	/**
 	 * Populates content into existing pages and DataObjects
 	 *
-	 * @see "silversmith help"	 
+	 * @see "silversmith help"
 	 * @param The parameters, e.g. from the command line
-	 */    
-    public static function populate($params = array ()) {        
+	 */
+    public static function populate($params = array ()) {
         if (!isset($params[2])) {
             fail("Usage: silversmith populate <class name>");
         }
@@ -645,29 +645,29 @@ class SilverSmith {
                     }
                     else {
                         $p->$relation = "(none)";
-                    }                    
+                    }
                 }
                 if($site_tree) {
                     $fields = array_merge(array('Title'), $fields);
-                }                
+                }
                 foreach ($fields as $field) {
                     say("{$field}: {$p->$field}");
                 }
 
             }
         }
- 
+
     }
-    
+
 
 
 
 	/**
 	 * Creates pages into the SiteTree and populates them with content
 	 *
-	 * @see "silversmith help"	 
+	 * @see "silversmith help"
 	 * @param The parameters, e.g. from the command line
-	 */    
+	 */
     public static function seed_content($params = array ()) {
         if (!isset($params[2])) {
             fail("Usage: silversmith seed-content <class name>");
@@ -719,18 +719,18 @@ class SilverSmith {
             if ($parent) {
                 $p->$parentField = $parentObj->ID;
             }
-            
+
             state("Seeding...");
-            
+
             $p->write();
             state("Adding content...");
-            SilverSmithUtil::add_default_content($p, $seedingLevel);        
+            SilverSmithUtil::add_default_content($p, $seedingLevel);
             $p->write();
             if ($site_tree) {
                 $p->publish("Stage", "Live");
             }
             state("Done.\n");
-            
+
             if ($verbose) {
                 say("Debug output:");
                 $fields = array_keys(DataObject::custom_database_fields($className));
@@ -741,32 +741,32 @@ class SilverSmith {
                     }
                     else {
                         $p->$relation = "(none)";
-                    }                    
+                    }
                 }
                 if($site_tree) {
                     $fields = array_merge(array('Title'), $fields);
-                }                
+                }
                 foreach ($fields as $field) {
                     say("{$field}: {$p->$field}");
                 }
             }
         }
-        
-        
-        
+
+
+
     }
-    
-    
-    
-    
+
+
+
+
 	/**
 	 * Builds out the SiteTree hierarchy as specified in _fixtures.txt
 	 *
-	 * @see "silversmith help"	 
+	 * @see "silversmith help"
 	 * @param The parameters, e.g. from the command line
-	 */        
+	 */
     public static function build_fixtures($params = array ()) {
-        
+
         ClassInfo::reset_db_cache();
         $fixtures_file = isset($params['file']) ? $params['file'] : self::$project_dir."/_fixtures.txt";
         if (!file_exists($fixtures_file)) {
@@ -785,7 +785,7 @@ class SilverSmith {
                 SilverSmith::add_sample_assets();
             }
         }
-        
+
         $answer = ask("This process will completely empty and repopulate your site tree. Are you sure you want to continue? (y/n)");
         if (strtolower($answer) != "y")
             die();
@@ -796,6 +796,7 @@ class SilverSmith {
             $level = 0;
             $count = 1;
             $class = "Page";
+            $setByJSON = '';
             $title = $line;
             preg_match('/^[ ]+[^ ]/', $line, $matches);
             if ($matches) {
@@ -804,6 +805,16 @@ class SilverSmith {
             if (stristr($line, ">")) {
                 list($title, $class) = explode(" > ", $line);
                 $class = SilverSmithUtil::proper_form($class);
+            }
+            if (stristr($line, "{")) {
+				if(preg_match_all('/> (.*?) {/',$line,$match)) {// has classname, set it correctly as it would have been broken when set above.
+					$class = $match[1][0];      
+				} else { // no className, set TITLE correctly as it would have been broken when set above.
+					$arrTitle = explode("{", $line);
+					$title = $arrTitle[0];
+				}
+                $arrayJSON = explode("{", $line);
+                $setByJSON = "{".end($arrayJSON);
             }
             preg_match('/\*[0-9]+/', $title, $m);
             if ($m) {
@@ -816,18 +827,19 @@ class SilverSmith {
                 'level' => $level,
                 'class' => trim($class),
                 'count' => $count,
+                'setByJSON' => $setByJSON,
                 'new' => !class_exists($class) || !in_array($class, ClassInfo::getValidSubclasses("SiteTree"))
             );
         }
-        
-        
+
+
         // Clean the slate
         say("Deleting current site tree");
         DB::query("DELETE FROM SiteTree");
         DB::query("DELETE FROM SiteTree_Live");
         DB::query("DELETE FROM SiteTree_versions");
         say("Done.");
-        
+
         // Update the DB with any new page types
         $new = array();
         say("Checking architecture file for new page types...");
@@ -845,9 +857,9 @@ class SilverSmith {
             self::rebuild_manifest();
             state("Done\n");
         }
-        
-        
-        
+
+
+
         $previousParentIDs = array(
             '0' => '0'
         );
@@ -866,7 +878,7 @@ class SilverSmith {
             if ($currentLevel > 0) {
                 $parentID = $previousParentIDs[$currentLevel - 2];
             }
-            
+
             for ($i = 0; $i < $count; $i++) {
                 $p = new $class();
                 if (strtolower($title) == "_auto_") {
@@ -874,11 +886,22 @@ class SilverSmith {
                 } else {
                     $p->Title = $title;
                 }
+
+				if($arr['setByJSON'] && json_decode($arr['setByJSON'], true)) {
+					foreach(json_decode($arr['setByJSON'], true) as $field => $value) {
+						$p->$field = $value;
+					}
+				}
+
                 state($indent . $p->Title, "green", "bold");
                 state(" [{$class}] created...");
                 if ($seeding > 0) {
-                    state("Seeding...");
-                    $p->Content = SilverSmithUtil::get_default_content($p->obj('Content'), $seeding);
+                	if($p->Content) {
+						state("*Content Detected, Seeding Cancelled*...");
+                	} else {
+						state("Seeding...");
+						$p->Content = SilverSmithUtil::get_default_content($p->obj('Content'), $seeding);
+					}
                 }
                 $p->Status   = "Published";
                 $p->ParentID = $parentID;
@@ -911,18 +934,18 @@ class SilverSmith {
         state(": You must ");
         state("restart your browser", null, null, "bold");
         state(" to clear your session in order to view the architecture changes.\n");
-        
+
     }
-    
-    
-    
-    
+
+
+
+
 	/**
 	 * Uninstalls the CLI tool from the filesystem
 	 *
-	 * @see "silversmith help"	 
+	 * @see "silversmith help"
 	 * @param The parameters, e.g. from the command line
-	 */        
+	 */
     public static function cli_uninstall($params = array ()) {
         $response = (isset($params['force'])) ? "y" : ask("Are you sure you want to uninstall the SilverSmith CLI tools? (y/n)");
         if (strtolower($response) == "y") {
@@ -930,18 +953,18 @@ class SilverSmith {
             exec("sudo rm /usr/local/bin/silversmith");
         }
     }
-    
-    
+
+
 
 
 
 	/**
 	 * Initializes a new SilverSmith project
 	 *
-	 * @see "silversmith help"	 
+	 * @see "silversmith help"
 	 * @param The parameters, e.g. from the command line
-	 */        
-    public static function init($params = array ()) {  
+	 */
+    public static function init($params = array ()) {
         $no_assets = isset($params['no-assets']);
         if (!file_exists(self::$project_dir . "/_project.yml")) {
             if (isset($params['example'])) {
@@ -956,7 +979,7 @@ class SilverSmith {
         } else {
             say("File _project.yml already exists.");
         }
-        
+
         if (!file_exists(self::$project_dir . "/_fixtures.txt")) {
             $fh = fopen(self::$project_dir . "/_fixtures.txt", "w");
             if (isset($params['example'])) {
@@ -967,21 +990,21 @@ class SilverSmith {
         } else {
             say("File _fixtures.txt already exists.");
         }
-        
+
         if (!$no_assets) {
             SilverSmith::add_sample_assets();
         }
     }
-    
+
 
 
 
 	/**
 	 * Initializes a new module in the current project directory
 	 *
-	 * @see "silversmith help"	 
+	 * @see "silversmith help"
 	 * @param The parameters, e.g. from the command line
-	 */    
+	 */
     public static function init_module($params = array ()) {
         if (!isset($params[2]) || empty($params[2])) {
             fail("Please specify a module name.");
@@ -994,36 +1017,36 @@ class SilverSmith {
         say($d);
         mkdir("$d/code");
         say("$d/code");
-        
+
         mkdir("$d/css");
         say("$d/css");
-        
+
         mkdir("$d/javascript");
         say("$d/javascript");
-        
+
         mkdir("$d/templates");
         say("$d/templates");
-        
+
         mkdir("$d/templates/Layout");
         say("$d/templates/Layout");
-        
+
         mkdir("$d/templates/Includes");
         say("$d/templates/Includes");
-        
+
         $fh = fopen("$d/_config.php", "w");
         fwrite($fh, "<?php\n");
         fclose($fh);
         say("$d/_config.php");
-        
+
         mkdir("$d/_config");
         say("$d/_config");
-        
+
         $fh = fopen("$d/_config/_config.yml", "w");
         fwrite($fh, "---\nName: $d\nAfter: 'framework/*','cms/*'\n");
         fclose($fh);
         say("$d/_config/_config.yml");
     }
-    
+
 
 
 
@@ -1032,9 +1055,9 @@ class SilverSmith {
 	 * Upgrades this version of SilverSmith
 	 *
 	 * @todo Move this to Composer
-	 * @see "silversmith help"	 
+	 * @see "silversmith help"
 	 * @param The parameters, e.g. from the command line
-	 */        
+	 */
     public static function upgrade($params = array ()) {
         if (self::is_upgrade_available()) {
             $response = ask("An upgrade is available. Install now? (y/n)");
@@ -1048,38 +1071,38 @@ class SilverSmith {
                 fclose($fh);
                 chdir($old_dir);
             }
-            return; 
+            return;
         } else {
             say("SilverSmith is up to date.");
         }
     }
 
-    
-    
-    
+
+
+
 
 	/**
 	 * Displays the required spec for the SilverSmith project configuration file
 	 *
-	 * @see "silversmith help"	 
+	 * @see "silversmith help"
 	 * @param The parameters, e.g. from the command line
-	 */    
+	 */
     public static function spec($params = array ()) {
         self::load_interface_manifest();
-        
+
         say("PageTypes:");
         say("  YourPageType:");
         say("    Fields:");
         say("      Tagline:");
         say("");
         $required = SilverSmithSpec::get("Field.RequiredNodes")->toArray();
-        foreach (SilverSmithSpec::get("Field.BaseNodes") as $key => $node) {            
+        foreach (SilverSmithSpec::get("Field.BaseNodes") as $key => $node) {
             $r = in_array($key, $required) ? ", required" : "";
             $v = "";
             if ($vals = $node->getPossibleValues()) {
                 $v = " (" . implode(',', $vals) . ")";
             }
-            
+
             say("        ## {$node->getDescription()} [{$node->getDataType()}{$r}{$v}]");
             say("        {$key}: {$node->getExample()}");
             say("");
@@ -1110,11 +1133,11 @@ class SilverSmith {
         say("        Interface:");
         say("");
         $required = SilverSmithSpec::get("Interface.RequiredNodes");
-        if($required) $required = $required->toArray();        
+        if($required) $required = $required->toArray();
         foreach (SilverSmithSpec::get("Interface.BaseNodes") as $key => $node) {
             $r = in_array($key, $required) ? ", required" : "";
             $v = "";
-            if ($vals = $node->getPossibleValues()) {                
+            if ($vals = $node->getPossibleValues()) {
                 $v = " (" . implode(',', $vals->toArray()) . ")";
             }
             say("          ## {$node->getDescription()} [{$node->getDataType()}{$r}{$v}]");
@@ -1138,7 +1161,7 @@ class SilverSmith {
             if ($vals = $node->getPossibleValues()) {
                 $v = " (" . implode(',', $vals->toArray()) . ")";
             }
-            
+
             say("            ## {$node->getDescription()} [{$node->getDataType()}{$r}{$v}]");
             say("            {$key}: {$node->getExample()}");
             say("");
@@ -1166,7 +1189,7 @@ class SilverSmith {
             say("    {$key}: {$node->getExample()}");
             say("");
         }
-        
+
         say("  ## Standalone components that are not necessarily related to or managed on a specific page type.");
         say("Components:");
         say("  Client:");
@@ -1192,11 +1215,11 @@ class SilverSmith {
             say("    {$key}: {$node->getExample()}");
             say("");
         }
-        
+
     }
-    
-    
-    public static function fix_mamp($params = array ()) { 
+
+
+    public static function fix_mamp($params = array ()) {
         if(!is_dir("/var/mysql")) {
             exec("sudo mkdir /var/mysql;ln -s /Applications/MAMP//tmp/mysql/mysql.sock /var/mysql/mysql.sock");
         }
@@ -1224,7 +1247,7 @@ class SilverSmith {
             array_pop($options);
             $descriptions = $a->getDescription()->toArray();
             $source       = (sizeof($options) > sizeof($descriptions)) ? $options : $descriptions;
-            
+
             for ($i = 0; $i < sizeof($source); $i++) {
                 $cmd = ($i == 0) ? $a->getKey() : "";
                 state(cell($cmd, 20, false));
@@ -1236,11 +1259,11 @@ class SilverSmith {
             }
             say(cell("", 20) . cell("", 50) . cell("", 50));
         }
-        
+
     }
-        
-        
-}	
+
+
+}
 
 
 
@@ -1302,7 +1325,7 @@ function error($msg) {
  * @param integer The width, in characters of the table cell
  * @param boolean Underline the table cell, e.g. a table heading
  * @param string The foreground color
- * @param string The background color 
+ * @param string The background color
  * @return string
  */
 function cell($text, $width = 30, $underline = true, $foreground = null, $background = null) {
@@ -1316,10 +1339,10 @@ function cell($text, $width = 30, $underline = true, $foreground = null, $backgr
     $u = $underline ? "underline" : null;
     state($cell, $foreground, $background, $u);
     state("|");
-    
+
     $ret = ob_get_contents();
     ob_end_clean();
     return $ret;
-    
+
 }
 

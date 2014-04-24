@@ -49,6 +49,14 @@ PageType:
       DataType: string
       Description: Description that appears in the Page creation process inside the CMS
       Example: A page for uploading and listing CVs
+    skeletonDescription:
+      DataType: string
+      Description: A description of the visual styles on the PageType
+      Example: A HomePage with Headers and rotating Testimonials
+    skeletonSitename:
+      DataType: string
+      Description: A sitename (used only on HomePage type) do override the database sitename.
+      Example: "Your Site Name Here"
     AllowedInstances:
       DataType: integer
       Description: The number of instances of this page that can be present in the site tree at one time

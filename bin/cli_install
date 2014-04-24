@@ -20,9 +20,9 @@ if [ ! -d "$INSTALL_PATH" ];then
 fi
 cd ~
 if [ "$1" = "--admin" ];then
-	git clone git@github.com:unclecheese/SilverSmith.git silversmith
+	git clone git@github.com:michaelbollig/SilverSmith.git silversmith
 else 	
-	git clone git://github.com/unclecheese/SilverSmith.git silversmith
+	git clone git://github.com/michaelbollig/SilverSmith.git silversmith
 fi
 if [ -d "silversmith" ];then
 	echo "Package downloaded successfully..."

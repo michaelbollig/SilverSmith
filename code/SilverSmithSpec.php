@@ -14,12 +14,12 @@ class SilverSmithSpec {
 
 
 	/**
-	 * @var BedrockYAML A cached object representing the spec.yml 
+	 * @var BedrockYAML A cached object representing the spec.yml
 	 */
     protected static $settings_list;
-    
-    
-    
+
+
+
     /**
      * Loads the YAML into a {@link BedrockYAML} object given a file path
      *
@@ -28,9 +28,9 @@ class SilverSmithSpec {
     public static function load($path) {
         self::$settings_list = new BedrockYAML($path);
     }
-    
-    
-    
+
+
+
     /**
      * Gets a given setting from the spec
      *
@@ -40,16 +40,16 @@ class SilverSmithSpec {
     public static function get($setting) {
         return self::$settings_list->get($setting);
     }
-    
-    
-    
-    
+
+
+
+
     /**
      * Gets a translatable list of a given setting
      * Future-proofing for a GUI
      *
      * @param string The dot-separated path to the setting
-     * @return 
+     * @return
      */
     public static function get_i18n_map($path) {
         $map = array();
@@ -60,10 +60,10 @@ class SilverSmithSpec {
         }
         return $map;
     }
-    
-    
-    
-    
+
+
+
+
     /**
      * Future-proofing for a GUI. Provide translatable entities for the spec
      *
@@ -86,16 +86,16 @@ class SilverSmithSpec {
         }
         return $entities;
     }
-    
-    
-    
+
+
+
 }
 
 
 
 
 /**
- * A class that validates a given project configuration file based on the spec.yml	
+ * A class that validates a given project configuration file based on the spec.yml
  *
  * @package SilverSmith
  * @author Aaron Carlino <unclecheese@leftandmain.com>
@@ -108,15 +108,15 @@ class SilverSmithSpec_Validator {
 	 * @var array A list of errors in the YAML
 	 */
     protected $errors = array();
-    
-    
+
+
     /**
-     * @var BedrockYAML The object representing the YAML input to be validated	
+     * @var BedrockYAML The object representing the YAML input to be validated
      */
     protected $yml;
-    
-    
-    
+
+
+
     /**
      * Create a new instances of the validator
      *
@@ -126,10 +126,10 @@ class SilverSmithSpec_Validator {
         $this->yml = new BedrockYAML($path);
         $this->validate();
     }
-    
-    
-    
-    
+
+
+
+
     /**
      * Get all of the errors in the project YAML file
      *
@@ -138,10 +138,10 @@ class SilverSmithSpec_Validator {
     public function getErrors() {
         return $this->errors;
     }
-    
-    
-    
-    
+
+
+
+
     /**
      * Validate the YAML file based on the spec.yml
      *
@@ -158,15 +158,15 @@ class SilverSmithSpec_Validator {
             }
         }
     }
-    
-    
-    
-    
+
+
+
+
     /**
      * A recursive function that validates the project YAML based on the spec.yml
      *
      * @param BedrockNode The node to validate
-     * @param string The name of the parent node	
+     * @param string The name of the parent node
      */
     protected function doValidation($setting, $parent_class = null) {
         foreach ($setting as $name => $result) {
@@ -183,7 +183,7 @@ class SilverSmithSpec_Validator {
             if (!$validator && $parent_class) {
                 $validator = SilverSmithSpec::get($parent_class . ".AvailableNodes.{$name}");
             }
-            
+
             if (!$validator) {
                 continue;
             }
@@ -230,19 +230,19 @@ class SilverSmithSpec_Validator {
                 if ($vals = $validator->getPossibleValues()) {
                     $this->validatePossibleValues($value, $vals, $name);
                 }
-                
+
             }
-            
-            
+
+
             if ($is_setting) {
                 $this->doValidation($value, $result->getBaseClass());
             }
         }
     }
-    
-    
-    
-    
+
+
+
+
     /**
      * Validates a node to make sure it is the right data type
      *
@@ -263,13 +263,13 @@ class SilverSmithSpec_Validator {
             'false'
         )) && !is_bool($value)))
             $this->errors[] = sprintf(_t('Bedrock.VALUEMUSTBEBOOLEAN', 'The value of %s must be a boolean. Right now it is %s.'), $name, $value);
-        
+
     }
-    
-    
-    
-    
-    
+
+
+
+
+
     /**
      * Validates a node to make sure its value is within the list of allowed values
      *
@@ -288,7 +288,7 @@ class SilverSmithSpec_Validator {
         if (!$valid) {
             $this->errors[] = sprintf(_t('Bedrock.VALUENOTALLOWED', '"%s" is not a valid value for %s. Allowed values are %s'), $value, $n, implode(', ', $allowed));
         }
-        
+
     }
-    
+
 }
