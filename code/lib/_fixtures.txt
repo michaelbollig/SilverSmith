@@ -10,5 +10,5 @@ News > NewsHolder
 Events > EventsHolder
   _auto_ *3 > EventPage
 
-Contact Us > ContactPage
+Contact Us > ContactPage {"ShowInMenus": false, "MenuTitle": "Contact"}
 

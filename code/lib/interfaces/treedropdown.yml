@@ -1,0 +1,4 @@
+Relations: [manymany]
+Instantiate: |
+  TreeMultiselectField::create('<@= Name @>', _t('<@= Class @>.<@= Interface.Entity @>', '<@= Interface.Heading @>'),'<@= Class @>')
+Update: |
