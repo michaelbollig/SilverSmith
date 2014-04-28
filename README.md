@@ -4,7 +4,7 @@ SilverSmith is a CLI tool for SilverStripe 3.0 development that will help you bu
 ## Installation
 Run this command in the root of your SilverStripe project directory.
 ```
-git clone git://github.com/unclecheese/SilverSmith.git silversmith
+git clone git://github.com/michaelbollig/SilverSmith.git silversmith
 ```
 
 To install the command globally, so that you can access the tools from any project, run the following command from the root of your project directory
