@@ -14,7 +14,7 @@ class <@= Key @> extends <@= Parent @> {
 
 }
 
-class <@= Key @>_Controller extends <@= Parent @>_Controller {
+class <@= Key @>_Controller extends <@= ParentController @> {
 	
 	/** /-/ **//** -/- **/
 

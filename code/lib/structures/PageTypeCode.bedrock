@@ -3,10 +3,6 @@
 	private static $icon = '<@= Icon @>';
 <@ /if @>
 
-<@ if SkeletonDescription @>
-	static $skeletonDescription = '<@= SkeletonDescription @>';
-<@ /if @>
-
 <@ if SkeletonSitename @>
 	static $skeletonSitename = '<@= SkeletonSitename @>';
 <@ /if @>
@@ -49,6 +45,13 @@
 
 
 <@ /if @>
+
+<@ if SkeletonDescription @>
+	public function skeletonDescription() {
+		return '<@= SkeletonDescription @>';
+	}
+<@ /if @>
+
 <@ if IsFinal @>
 <@ if Decorator @>
 	public function updateGeneratedCMSFields(FieldList $fields) {

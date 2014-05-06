@@ -27,9 +27,18 @@ class BedrockPageType extends BedrockDataRecord {
         if ($this->key == "Page")
             return "SiteTree";
         return $this->get('Parent') ? $this->get('Parent') : "Page";
-    }
-    
-    
+    }    
+
+	/**
+	 * Gets the parent controller class for this page type, e.g. "Page_Controller"
+	 *
+	 * @return string
+	 */
+    public function getParentController() {
+        if ($this->key == "Page")
+            return "ContentController";
+        return $this->get('Parent') ? $this->get('Parent')."_Controller" : "Page_Controller";
+    }    
     
     /**
      * Binds the component to a {@link BedrockTemplate} and creates the PHP code that defines the

@@ -314,7 +314,7 @@ class BedrockDataRecord extends SilverSmithNode {
                 if (isset($set[2])) {
                     if ((substr($set[1], -11) == "_Controller") && ($set[2] != $this->getParent() . "_Controller")) {
                         //say("Replacing ".$set[1] . " extends " . $set[2] . " with " . $set[1] . " extends {$this->getParent()}_Controller");
-                        $new_content = preg_replace('/' . $set[1] . '[\s]+extends[\s]+([A-Za-z0-9_]+)/', $set[1] . " extends {$this->getParent()}_Controller", $new_content);
+                        $new_content = preg_replace('/' . $set[1] . '[\s]+extends[\s]+([A-Za-z0-9_]+)/', $set[1] . " extends {$this->getParentController()}", $new_content);
                     } elseif ((substr($set[1], -11) != "_Controller") && ($set[2] != $this->getParent())) {
                         //	say("Replacing ".$set[1] . " extends " . $set[2] . " with " . $set[1] . " extends {$this->getParent()}");
                         $new_content = preg_replace('/' . $set[1] . '[\s]+extends[\s]+([A-Za-z0-9_]+)/', $set[1] . " extends {$this->getParent()}", $new_content);
@@ -453,6 +453,11 @@ class BedrockDataRecord extends SilverSmithNode {
      */
     public function getIsFinal() {
         return !$this->getHasSilverSmithedChildren();
+    }
+
+    public function getParentIsSiteTree() {
+        if ($this->key == "Page")
+            return true;
     }
 
     /*
