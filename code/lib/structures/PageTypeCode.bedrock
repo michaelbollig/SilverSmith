@@ -8,11 +8,11 @@
 <@ /if @>
 
 <@ if Description @>
-	static $description = '<@= Description @>';
+	private static $description = '<@= Description @>';
 <@ /if @>
 
 <@ if SingularName @>
-	static $singular_name = '<@= SingularName @>';
+	private static $singular_name = '<@= SingularName @>';
 
 	function getSingularName() {
 		return _t('<@= Namespace @>.SINGULARNAME', $this->stat('<@= EscapedLabel @>'));
@@ -21,7 +21,7 @@
 
 
 <@ if AllowedChildren @>
-	static $allowed_children = array (
+	private static $allowed_children = array (
 <@ each AllowedChildren @>
 		'<@= :Val @>',
 <@ /each @>
@@ -37,7 +37,7 @@
 
 <@ /if @>
 <@ if Searchable @>
-	static $searchable_fields = array (
+	private static $searchable_fields = array (
 <@ each Searchable @>
 		'<@= :Name @>' => '<@= :Val @>',
 <@ /each @>
