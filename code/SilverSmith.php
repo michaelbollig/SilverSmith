@@ -1263,6 +1263,76 @@ class SilverSmith {
     }
 
 
+
+    public static function include_externals($params = array ()) {
+        // Use -project-path to get project directoy or fallback to SS project directory.
+		$path = isset($params['project-path']) ? $params['project-path'] : "";
+		if($path) {
+			$project_dir_temp = explode('/',$path);
+			$project_dir = $project_dir_temp[count($project_dir_temp)-2] . "/";
+		} else {
+    		$project_dir = self::$project_dir . "/";
+    	}
+        // Can we access the SS Base? Set $base.
+		$isSS = class_exists('Director') && Director::baseFolder();
+		if($isSS) {
+			$base = Director::baseFolder() . '/';
+		} else {
+			if(!$path) {
+				fail("Can't find Silverstripe and no path supplied to silverstripe ".'$project'." directory. Use \"-project-path\"");
+			}
+			$base = explode('/',$path);
+			array_pop($base);
+			array_pop($base);
+			$base = implode('/',$base) . "/";
+		}
+
+		// set filename and sudo status
+		$externals_file = isset($params['name']) ? $base.$project_dir.$params['name'] : $base.$project_dir."_externals.txt";
+		$sudo = isset($params['sudo']) ? 'sudo ' : '';
+
+		// check we're in an svn-controlled directory
+		$isSVN = exec($sudo.'svn info '.$base.$project_dir.' | grep "^URL:"');
+		if($isSVN) {
+			// No externals file for this project but we are in an SVN repo? Shall we create an svn externals dump.
+			if (!file_exists($externals_file)) {
+				$answer = ask("The file $externals_file doesn't exist. Attempt to dump the current externals and create one? (y/n)");
+				if (strtolower(trim($answer)) == "y") {
+					exec($sudo."svn propget svn:externals ".$base, $out);
+					$temp = file_put_contents($externals_file, implode("\n", $out));
+					if($temp === false) {
+						fail("Error creating $externals_file.");
+					} else {
+						say(success("File '$externals_file' created."));
+						die();
+					}
+				}
+				fail("The file $externals_file doesn't exist.");
+
+			// All good: update the svn externals
+			} else {
+				say("Updating SVN External Definitions: \"svn propset svn:externals -F ".$externals_file." ".$base."\"");
+				passthru($sudo."svn propset svn:externals -F ".$externals_file." ".$base);
+				say("Running SVN Update: \"svn update ".$base."\"");
+				passthru($sudo."svn update ".$base);
+				say(success("Repository successfully updated."));
+				
+				// If it's an SS site, rebuild the manifest and database too.
+				if($isSS) {
+					state("Rebuilding database, refreshing manifest...");
+					self::rebuild_manifest();
+					self::rebuild_database();
+					say("\r");
+					say(success("Rebuild and refresh complete."));
+				} else {
+					say(warn("No silverstripe installation found."));
+				}
+			}
+		} else {
+			fail("The directory isn't controlled by SVN. Exiting.");
+		}
+    }
+
 }
 
 

@@ -256,3 +256,28 @@ AllowedActions:
       - Displays this help screen
     Options: {}
 
+  include-externals:
+    ProjectRequired: true
+    Description: 
+      - Rebuilds the externals definitions with
+      - an repositories specified in a text file. 
+      - If no externals.txt exists, you are given
+      - the option to have one created from the 
+      - current external definitions.
+    Options:
+      name:
+        arg: "-name"
+        description: 
+          - The source file for the externals. 
+          - (Defaults to <project dir>/_externals.txt)
+      sudo:
+        arg: "-sudo"
+        description: 
+          - Run the SVN commands as sudo.
+      project-path:
+        arg: "-project-path"
+        description:
+          - Full path to $project directory, for when 
+          - there is no SS project set up yet. Assumes 
+          - extenals file is located here and 
+          - externals are added to ../ directory.

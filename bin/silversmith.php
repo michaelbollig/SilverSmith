@@ -51,8 +51,16 @@ foreach ($PARAMS as $k => $v) {
 
 if ($allowed_actions->get($action)->getProjectRequired()) {
     if (!SilverSmith::switch_to_project_root())
-        fail("You must run this command from within a SilverStripe project.");
-    
+    	if($action === "include-externals") {
+			// one-off for this command as it can be run in either SS project or outside ss project
+			say("Executing CLI command\n\n");
+			line();
+			$action = str_replace("-","_", $action);
+			call_user_func("SilverSmith::{$action}",$PARAMS);
+			die();
+    	} else {
+	        fail("You must run this command from within a SilverStripe project.");
+    	}
     if (!isset($_SERVER['HTTP_HOST'])) {
         $_SERVER['HTTP_HOST'] = "";
     }
