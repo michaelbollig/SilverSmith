@@ -1264,7 +1264,7 @@ class SilverSmith {
 
 
 
-    public static function include_externals($params = array ()) {
+    public static function build_externals($params = array ()) {
         // Use -project-path to get project directoy or fallback to SS project directory.
 		$path = isset($params['project-path']) ? $params['project-path'] : "";
 		if($path) {

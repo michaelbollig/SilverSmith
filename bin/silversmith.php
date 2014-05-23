@@ -51,7 +51,7 @@ foreach ($PARAMS as $k => $v) {
 
 if ($allowed_actions->get($action)->getProjectRequired()) {
     if (!SilverSmith::switch_to_project_root())
-    	if($action === "include-externals") {
+    	if($action === "build-externals") {
 			// one-off for this command as it can be run in either SS project or outside ss project
 			say("Executing CLI command\n\n");
 			line();
