@@ -256,7 +256,7 @@ AllowedActions:
       - Displays this help screen
     Options: {}
 
-  include-externals:
+  build-externals:
     ProjectRequired: true
     Description: 
       - Rebuilds the externals definitions with
