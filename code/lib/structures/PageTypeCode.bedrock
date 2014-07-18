@@ -3,10 +3,6 @@
 	private static $icon = '<@= Icon @>';
 <@ /if @>
 
-<@ if SkeletonSitename @>
-	static $skeletonSitename = '<@= SkeletonSitename @>';
-<@ /if @>
-
 <@ if Description @>
 	private static $description = '<@= Description @>';
 <@ /if @>
@@ -51,6 +47,12 @@
 		return '<@= SkeletonDescription @>';
 	}
 <@ /if @>
+<@ if SkeletonSitename @>
+	public function skeletonSitename() {
+		return '<@= SkeletonSitename @>';
+	}
+<@ /if @>
+
 
 <@ if IsFinal @>
 <@ if Decorator @>
