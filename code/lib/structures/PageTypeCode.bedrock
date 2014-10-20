@@ -74,7 +74,7 @@
 <@ /each @><@ /if @>
 <@ if Components @><@ each Components @>
 <@ if Instantiation @>
-		$fields->addFieldToTab("<@= Tab @>", <@= Instantiation @>);
+		$fields->addFieldToTab("<@= Tab @>", <@= Instantiation @><@ if Before @>, '<@= Before @>'<@ /if @>);
 <@ /if @>
 <@ /each @><@ /if @>
 <@ if Fields @><@ each Fields @>

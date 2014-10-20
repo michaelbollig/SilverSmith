@@ -130,6 +130,10 @@ Component:
       DataType: string
       Description: The tab in which this component should be managed
       Example: Photos
+    Before:
+      DataType: string
+      Description: The existing field before which this component will be placed in the edit form
+      Example: Title
     Interface:
       DataType: setting
       Description: An array of properties for the interface used to manage this component relationship
